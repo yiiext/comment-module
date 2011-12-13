@@ -33,6 +33,7 @@ git submodule add https://github.com/yiiext/comment-module.git protected/extensi
 Add module to your application config:
 
 ```php
+<?php
     // ...
     'modules'=>array(
         // ...
@@ -85,6 +86,8 @@ You might want to add foreign keys here too.
 Add commentable behavior to all Models you want to be commented.
 
 ```php
+<?php
+    // ...
     public function behaviors() {
         return array(
             'commentable' => array(
