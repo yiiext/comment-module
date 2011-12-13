@@ -20,15 +20,18 @@ Quickstart
 
 Go to your application baseDir (`protected` in default yii webapp).
 Clone git repo or [download](https://github.com/yiiext/comment-module/tags) latest release.
-```
+
+```sh
 git clone https://github.com/yiiext/comment-module.git extensions/comment-module
 ```
 You can also add it to git as a submodule (run command from root of your repo):
-```
+
+```sh
 git submodule add https://github.com/yiiext/comment-module.git protected/extensions/comment-module
 ```
 
 Add module to your application config:
+
 ```php
     // ...
     'modules'=>array(
@@ -53,6 +56,7 @@ Add module to your application config:
 
 Create database tables:
 You can use the database migration provieded by this extension or create a table (example for mysql):
+
 ```sql
     CREATE TABLE IF NOT EXISTS `comments` (
       `id`         int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -66,6 +70,7 @@ You can use the database migration provieded by this extension or create a table
 You might also want to add a foreign key for `userId` column that references you user tables pk.
 
 Create a database table for every commentable Model relation:
+
 ```sql
     CREATE TABLE IF NOT EXISTS `posts_comments_nm` (
       `postId`    int(11) UNSIGNED NOT NULL,
@@ -78,6 +83,7 @@ Create a database table for every commentable Model relation:
 You might want to add foreign keys here too.
 
 Add commentable behavior to all Models you want to be commented.
+
 ```php
     public function behaviors() {
         return array(
@@ -93,7 +99,8 @@ Add commentable behavior to all Models you want to be commented.
 ```
 
 Finally add comments to your view template of the commentable model:
-```
+
+```php
 <h1>comments</h1>
 
 <?php $this->renderPartial('comment.views.comment.commentList', array(
