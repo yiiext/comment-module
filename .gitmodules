@@ -1,0 +1,3 @@
+[submodule "extensions/gravatar"]
+	path = extensions/gravatar
+	url = https://github.com/malyshev/yii-gravatar.git
