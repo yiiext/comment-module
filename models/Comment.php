@@ -11,6 +11,7 @@
  * @property integer $id
  * @property string  $message
  * @property integer $userId
+ * @property integer $createDate
  *
  * The followings are the available model relations:
  * @property Users $user
@@ -78,6 +79,15 @@ class Comment extends CActiveRecord
 		return 'comments';
 	}
 
+	public function behaviors() {
+		return array(
+			'CTimestampBehavior' => array(
+				'class' => 'zii.behaviors.CTimestampBehavior',
+				'createAttribute' => 'createDate',
+				'updateAttribute' => null,
+			),
+		);
+	}
 	/**
 	 * @return array validation rules for model attributes.
 	 */

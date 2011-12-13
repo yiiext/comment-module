@@ -96,6 +96,7 @@ class CommentController extends Controller
 			if(Yii::app()->request->isAjaxRequest) {
 				$output = '';
 				if($comment->save()) {
+					$comment->refresh(); // need this to replace CDbExpression for timestamp attribute
 					$output .= $this->renderPartial('_view',array(
 						'data'=>$comment,
 					), true);

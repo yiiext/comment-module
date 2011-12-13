@@ -21,6 +21,7 @@ class m111104_135414_commentTable extends CDbMigration
 				'id' => 'pk',
 				'message' => 'text',
 				'userId' => $this->userColumType,
+				'createDate' => 'datetime',
 				'CONSTRAINT fk_comments_userId FOREIGN KEY (`userId`)
 				 REFERENCES `'.$this->userTable.'`(`'.$this->userTablePk.'`) ON DELETE SET NULL ON UPDATE CASCADE',
 			),
