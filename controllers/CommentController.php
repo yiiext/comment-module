@@ -91,8 +91,11 @@ class CommentController extends Controller
 			$comment->attributes = $_POST['Comment'];
 			$comment->type = $_POST['Comment']['type'];
 			$comment->key = $_POST['Comment']['key'];
-			Yii::trace(print_r($_POST,1), 'user');
-			$comment->userId = 2;
+			if (Yii::app()->user->isGuest) {
+				$comment->userId = null;
+			} else {
+				$comment->userId = Yii::app()->user->id;
+			}
 			if(Yii::app()->request->isAjaxRequest) {
 				$output = '';
 				if($comment->save()) {
