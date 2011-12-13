@@ -111,4 +111,4 @@ Finally add comments to your view template of the commentable model:
 )); ?>
 ```
 
-If there is something missing here, or you think one step should be described more detailed please [report it](://github.com/yiiext/comment-module/issues/new). Thanks!
+If there is something missing here, or you think one step should be described more detailed please [report it](https://github.com/yiiext/comment-module/issues/new). Thanks!
