@@ -3,9 +3,13 @@
 /**
  * This is the model class for table "comments".
  *
+ * @property-read CommentModule $module the comment module
+ * @property string $type this is set to one of the commentableModels scope from CommentModule
+ * @property mixed  $key the primary key of the AR this comment belongs to
+ *
  * The followings are the available columns in table 'comments':
  * @property integer $id
- * @property string $message
+ * @property string  $message
  * @property integer $userId
  *
  * The followings are the available model relations:
@@ -14,9 +18,40 @@
  */
 class Comment extends CActiveRecord
 {
-	protected $relationType;
-	protected $relationKey;
+	private $_type;
+	private $_key;
 
+	/**
+	 * @var string set the commentableModels scope from CommentModule
+	 */
+	public function setType($type)
+	{
+		$this->_type = strtolower($type);
+	}
+
+	/**
+	 * @return string get the comments scope
+	 */
+	public function getType()
+	{
+		return $this->_type;
+	}
+
+	/**
+	 * @var mixed set the primary key of the AR this comment belongs to
+	 */
+	public function setKey($key)
+	{
+		$this->_key = $key;
+	}
+
+	/**
+	 * @return mixed the primary key of the AR this comment belongs to
+	 */
+	public function getKey()
+	{
+		return $this->_key;
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -25,6 +60,14 @@ class Comment extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * @return CommentModule the comment module instance
+	 */
+	public function getModule()
+	{
+		return Yii::app()->getModule('comment');
 	}
 
 	/**
@@ -40,15 +83,32 @@ class Comment extends CActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-			array('userId', 'numerical', 'integerOnly'=>true),
 			array('message', 'safe'),
+			array('type', 'validateType'),
+			array('key', 'validateKey'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, message, userId', 'safe', 'on'=>'search'),
 		);
+	}
+
+	public function validateType()
+	{
+		if (!isset($this->module->commentableModels[$this->type])) {
+			throw new CException('comment type ' . $this->type . ' not defined in CommentModule!');
+		}
+	}
+
+	public function validateKey()
+	{
+		$commentableModel = CActiveRecord::model($this->module->commentableModels[$this->type]);
+		if ($commentableModel->asa('commentable') === null) {
+			throw new CException('commentable Model must have behavior CommentableBehavior attached!');
+		}
+		if ($commentableModel->findByPk($this->key) === null) {
+			throw new CException('comment related record does not exist!');
+		}
 	}
 
 	/**
@@ -56,30 +116,36 @@ class Comment extends CActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
-			'user' => array(self::BELONGS_TO, 'User', 'userId'),
-			'commit' => array(self::HAS_ONE, 'GitCommit', 'sha'),
+			'user' => array(self::BELONGS_TO, $this->module->userModelClass, 'userId'),
 		);
-	}
-
-	public function setRelation($relation)
-	{
-		$this->relationType = $relation['type'];
-		$this->relationKey  = $relation['key'];
 	}
 
 	protected function afterSave()
 	{
-		switch($this->relationType)
-		{
-			case 'commit':
-				$this->getDbConnection()->createCommand("INSERT INTO comments_commits_map(commentId, commitSha) VALUES (:id, :sha);")
-					 ->execute(array(':id' => $this->id, ':sha' => $this->relationKey));
-			break;
-		}
+		$commentedModel = CActiveRecord::model($this->module->commentableModels[$this->type]);
+		$this->getDbConnection()->createCommand(
+			"INSERT INTO ".$commentedModel->mapTable."(".$commentedModel->mapCommentColumn.", ".$commentedModel->mapRelatedColumn.")
+			 VALUES (:id, :key);"
+		)->execute(array(':id' => $this->id, ':key' => $this->key));
+
 		parent::afterSave();
+	}
+
+	/**
+	 * @return string get comment users name
+	 */
+	public function getUserName()
+	{
+		return $this->user->{$this->module->userNameAttribute};
+	}
+
+	/**
+	 * @return string get comment users email
+	 */
+	public function getUserEmail()
+	{
+		return $this->user->{$this->module->userEmailAttribute};
 	}
 
 	/**
@@ -90,7 +156,9 @@ class Comment extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'message' => 'Message',
-			'userId' => 'User',
+			'userId' => 'User ID',
+			'userName' => 'Name',
+			'userEmail' => 'E-Mail',
 		);
 	}
 

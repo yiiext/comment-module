@@ -1,16 +1,16 @@
 <div class="view">
 
 	<div style="float: left;">
-		{$this->widget('ext.gravatar.yii-gravatar.YiiGravatar', [
-		    'email'=>$data->user->email,
+		{$this->widget('comment.extensions.gravatar.yii-gravatar.YiiGravatar', [
+		    'email'=>$data->userEmail,
 		    'size'=>80,
 		    'defaultImage'=>'monsterid',
 		    'secure'=>false,
 		    'rating'=>'r',
 		    'emailHashed'=>false,
 		    'htmlOptions'=>[
-		        'alt'=>$data->user->displayName,
-		        'title'=>$data->user->displayName
+		        'alt'=>$data->userName,
+		        'title'=>$data->userName
 		    ]
 		], true)}
 	</div>

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @package yiiext.modules.comment
+ */
 class CommentController extends Controller
 {
 	/**
@@ -76,52 +81,44 @@ class CommentController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Comment;
-
-/*        $this->breadcrumbs=array(
-            'Comments'=>array('index'),
-            'Create',
-        );
-
-        $this->menu=array(
-            array('label'=>'List Comment', 'url'=>array('index')),
-            array('label'=>'Manage Comment', 'url'=>array('admin')),
-        );*/
+		$comment=new Comment();
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-
 		if(isset($_POST['Comment']))
 		{
-			$model->attributes=$_POST['Comment'];
-			$model->setRelation($_POST['CommentRelation']);
-			$model->userId = 1;
+			$comment->attributes = $_POST['Comment'];
+			$comment->type = $_POST['Comment']['type'];
+			$comment->key = $_POST['Comment']['key'];
+			Yii::trace(print_r($_POST,1), 'user');
+			$comment->userId = 2;
 			if(Yii::app()->request->isAjaxRequest) {
 				$output = '';
-				if($model->save()) {
+				if($comment->save()) {
 					$output .= $this->renderPartial('_view',array(
-						'data'=>$model,
+						'data'=>$comment,
 					), true);
-					$model = new Comment();
+					$comment = new Comment();
+					$comment->type = $_POST['Comment']['type'];
+					$comment->key = $_POST['Comment']['key'];
 				}
 				$output .= $this->renderPartial('_form',array(
-					'comment'=>$model,
+					'comment'=>$comment,
 					'ajaxId'=>time(),
-					'relation'=>$_POST['CommentRelation'], // @todo: check input!
 				), true);
 				Yii::app()->clientScript->renderBodyEnd($output);
 				echo $output;
 				Yii::app()->end();
 			} else {
-				if($model->save()) {
-					$this->redirect(array('view','id'=>$model->id));
+				if($comment->save()) {
+					$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('view','id'=>$comment->id));
 				}
 			}
 		}
 
 		$this->render('create',array(
-			'model'=>$model,
+			'model'=>$comment,
 		));
 	}
 

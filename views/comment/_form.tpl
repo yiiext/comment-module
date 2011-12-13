@@ -2,6 +2,7 @@
 
 {$form=$this->beginWidget('CActiveForm', [
 	'id'=>'comment-form',
+    'action'=>['/comment/comment/create'],
 	'enableAjaxValidation'=>false
 ])}
 
@@ -13,12 +14,24 @@
 		{$form->error($comment,'message')}
 	</div>
 
-	{CHtml::hiddenField('CommentRelation[type]', $relation.type)}
-	{CHtml::hiddenField('CommentRelation[key]',  $relation.key)}
+	{$form->hiddenField($comment, 'type')}
+    {$form->hiddenField($comment, 'key')}
 
 	<div class="row buttons">
 	    {if $comment->isNewRecord}
-		    {CHtml::ajaxSubmitButton('Submit', ['/comment/create'], ['replace'=>'#comment-form-ajax'], ['id'=>'submit-comment'|cat:($ajaxId|default:"")])}
+            {* CHtml::hiddenField('returnUrl', $this->createUrl(''))}
+		    {CHtml::submitButton('Save') *}
+		    {CHtml::ajaxSubmitButton('Submit',
+                ['/comment/comment/create'],
+		        [
+                    'replace'=>'#comment-form-ajax',
+                    'error'=>"function(){
+                        $('#Comment_message').css('border-color', 'red');
+                        $('#Comment_message').css('background-color', '#fcc');
+                    }"
+		        ],
+		        ['id'=>'submit-comment'|cat:($ajaxId|default:"")]
+		    )}
 		{else}
 		    {CHtml::submitButton('Save')}
 		{/if}
