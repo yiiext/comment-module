@@ -21,18 +21,18 @@ Quickstart
 Go to your application baseDir (`protected` in default yii webapp).
 Clone git repo or [download](https://github.com/yiiext/comment-module/tags) latest release.
 
-```sh
+~~~sh
 git clone https://github.com/yiiext/comment-module.git extensions/comment-module
-```
+~~~
 You can also add it to git as a submodule (run command from root of your repo):
 
-```sh
+~~~sh
 git submodule add https://github.com/yiiext/comment-module.git protected/extensions/comment-module
-```
+~~~
 
 Add module to your application config:
 
-```php
+~~~php
 <?php
     // ...
     'modules'=>array(
@@ -53,12 +53,12 @@ Add module to your application config:
         // ...
     ),
     // ...
-```
+~~~
 
 Create database tables:
 You can use the database migration provieded by this extension or create a table (example for mysql):
 
-```sql
+~~~sql
     CREATE TABLE IF NOT EXISTS `comments` (
       `id`         int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
       `message`    text COLLATE utf8_unicode_ci,
@@ -67,12 +67,12 @@ You can use the database migration provieded by this extension or create a table
       PRIMARY KEY (`id`),
       KEY `fk_comments_userId` (`userId`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-```
+~~~
 You might also want to add a foreign key for `userId` column that references you user tables pk.
 
 Create a database table for every commentable Model relation:
 
-```sql
+~~~sql
     CREATE TABLE IF NOT EXISTS `posts_comments_nm` (
       `postId`    int(11) UNSIGNED NOT NULL,
       `commentId` int(11) UNSIGNED NOT NULL,
@@ -80,12 +80,12 @@ Create a database table for every commentable Model relation:
       KEY `fk_tasks_comments_comments` (`commentId`),
       KEY `fk_tasks_comments_tasks` (`taskId`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-```
+~~~
 You might want to add foreign keys here too.
 
 Add commentable behavior to all Models you want to be commented.
 
-```php
+~~~php
 <?php
     // ...
     public function behaviors() {
@@ -99,16 +99,16 @@ Add commentable behavior to all Models you want to be commented.
             ),
        );
     }
-```
+~~~
 
 Finally add comments to your view template of the commentable model:
 
-```php
+~~~php
 <h1>comments</h1>
 
 <?php $this->renderPartial('comment.views.comment.commentList', array(
 	'model'=>$model
 )); ?>
-```
+~~~
 
 If there is something missing here, or you think one step should be described more detailed please [report it](https://github.com/yiiext/comment-module/issues/new). Thanks!
