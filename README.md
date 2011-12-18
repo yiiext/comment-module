@@ -76,9 +76,9 @@ Create a database table for every commentable Model relation:
     CREATE TABLE IF NOT EXISTS `posts_comments_nm` (
       `postId`    int(11) UNSIGNED NOT NULL,
       `commentId` int(11) UNSIGNED NOT NULL,
-      PRIMARY KEY (`taskId`,`commentId`),
-      KEY `fk_tasks_comments_comments` (`commentId`),
-      KEY `fk_tasks_comments_tasks` (`taskId`)
+      PRIMARY KEY (`postId`,`commentId`),
+      KEY `fk_posts_comments_comments` (`commentId`),
+      KEY `fk_posts_comments_posts` (`postId`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 ~~~
 You might want to add foreign keys here too.
