@@ -15,20 +15,26 @@ Resources
 * [Code on github](https://github.com/yiiext/comment-module)
 * E-Mail the author: CeBe <[mail@cebe.cc](mailto:mail@cebe.cc)>
 
+Download
+--------
+
+There are two ways to get this extension working:
+
+1. Clone repo:
+   * Go to your application baseDir (`protected` in default yii webapp).
+   * `git clone https://github.com/yiiext/comment-module.git extensions/comment-module`
+     * If your project is in a git repository you can alternatively add comment-module as a submodule like this:
+     * `git submodule add https://github.com/yiiext/comment-module.git protected/extensions/comment-module`
+   * go to new comment-modules base dir and run
+     `git submodule update --init` to get the gravatar extension that's included.
+
+2. [Download](https://github.com/yiiext/comment-module/tags) latest release and put all the files into
+   `extensions/comment-module` under your application baseDir (`protected` in default yii webapp).
+   To be able to use Gravatar support you have to copy [YiiGravatar.php](https://github.com/malyshev/yii-gravatar/tree/master/yii-gravatar)
+   into `extensions/comment-module/extensions/gravatar`.
+
 Quickstart
 ----------
-
-Go to your application baseDir (`protected` in default yii webapp).
-Clone git repo or [download](https://github.com/yiiext/comment-module/tags) latest release.
-
-~~~sh
-git clone https://github.com/yiiext/comment-module.git extensions/comment-module
-~~~
-You can also add it to git as a submodule (run command from root of your repo):
-
-~~~sh
-git submodule add https://github.com/yiiext/comment-module.git protected/extensions/comment-module
-~~~
 
 Add module to your application config:
 
