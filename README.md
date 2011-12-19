@@ -12,6 +12,12 @@ Features:
 If there is something missing here, or you think one step should be described more detailed,
 please [report it](https://github.com/yiiext/comment-module/issues/new). Thanks!
 
+Requirements
+------------
+
+* Tested with Yii 1.1.8, should work in earlier versions
+* [yii-gravatar extension](https://github.com/malyshev/yii-gravatar) for gravatar support
+
 Resources
 ---------
 
@@ -64,7 +70,7 @@ Add module to your application config (optional config values are commented):
             // you can set accessRules that will be added to the comment controller {@see CController::accessRules()}
 //          'controllerAccessRules'=>array(),
             // you can extend comment class and use your extended one, set path alias here
-	        'commentModelClass'=>'comment.models.Comment',
+//	        'commentModelClass'=>'comment.models.Comment',
         ),
         // ...
     ),
