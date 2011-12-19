@@ -136,13 +136,13 @@ to which you can attach event handlers to handle them.
 See [The Definitive Guide to Yii](http://www.yiiframework.com/doc/guide/1.1/en/basics.component#component-event) on how to do this.
 
 You can also attach [behaviors](http://www.yiiframework.com/doc/guide/1.1/en/basics.component#component-behavior)
-to CommentModule by setting `'behaviors'=>array(/* ... */)` to the config described above.
+to CommentModule by setting `'behaviors'=>array(/* ... */)` in the module config described above.
 See [CModule::behaviors](http://www.yiiframework.com/doc/api/1.1/CModule#behaviors-detail) on how to add behaviors to a module.
 
 ### onNewComment
 
 This event is raised when a new comment has been saved.
-The following attributes are available on the `$event` gives as the first parameter to the event handler:
+The following attributes are available on the `$event` given as the first parameter to the event handler:
 
 * `$event->comment` is the currently added comment.
 * `$event->commentedModel` is the model the comment was added to.
