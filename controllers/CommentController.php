@@ -62,6 +62,9 @@ class CommentController extends CController
 				$output = '';
 				if($comment->save())
 				{
+					// refresh model to replace CDbExpression for timestamp attribute
+					$comment->refresh();
+
 					// render new comment
 					$output .= $this->renderPartial('_view',array(
 						'data'=>$comment,

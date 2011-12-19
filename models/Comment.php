@@ -143,9 +143,6 @@ class Comment extends CActiveRecord
 			 VALUES (:id, :key);"
 		)->execute(array(':id' => $this->id, ':key' => $this->key));
 
-		// refresh model to replace CDbExpression for timestamp attribute
-		$this->refresh();
-
 		parent::afterSave();
 
 		// raise new comment event
