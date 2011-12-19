@@ -67,10 +67,18 @@ class CommentableBehavior extends CActiveRecordBehavior
 		Yii::app()->getModule('comment');
 	}
 
+	/**
+	 * @return CommentModule
+	 */
+	public function getModule()
+	{
+		return Yii::app()->getModule('comment');
+	}
+
 	public function getCommentInstance()
 	{
-		$comment = new Comment();
-		$types = array_flip(Yii::app()->getModule('comment')->commentableModels);
+		$comment = Yii::createComponent($this->module->commentModelClass);
+		$types = array_flip($this->module->commentableModels);
 		if (!isset($types[$c=get_class($this->owner)])) {
 			throw new CException('No scope defined in CommentModule for commentable Model ' . $c);
 		}
@@ -85,7 +93,7 @@ class CommentableBehavior extends CActiveRecordBehavior
 			throw new CException('mapTable and mapRelatedColumn must not be null!');
 		}
 		// @todo: add support for composite pks
-		return Comment::model()->findAllBySql(
+		return Yii::createComponent($this->module->commentModelClass)->findAllBySql(
 			"SELECT * FROM comments c
 			 JOIN " . $this->mapTable . " cm ON c.id = cm." . $this->mapCommentColumn . "
 			 WHERE cm." . $this->mapRelatedColumn . "=:pk;", array(':pk'=>$this->owner->getPrimaryKey())

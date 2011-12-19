@@ -63,6 +63,8 @@ Add module to your application config (optional config values are commented):
 //          'controllerFilters'=>array(),
             // you can set accessRules that will be added to the comment controller {@see CController::accessRules()}
 //          'controllerAccessRules'=>array(),
+            // you can extend comment class and use your extended one, set path alias here
+	        'commentModelClass'=>'comment.models.Comment',
         ),
         // ...
     ),

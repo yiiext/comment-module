@@ -79,7 +79,8 @@ class Comment extends CActiveRecord
 		return 'comments';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'CTimestampBehavior' => array(
 				'class' => 'zii.behaviors.CTimestampBehavior',

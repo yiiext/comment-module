@@ -39,16 +39,16 @@ class CommentController extends CController
 	 */
 	public function actionCreate()
 	{
-		$comment = new Comment();
+		$comment = Yii::createComponent($this->module->commentModelClass);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Comment']))
+		if(isset($_POST[$cClass=get_class($comment)]))
 		{
-			$comment->attributes = $_POST['Comment'];
-			$comment->type = $_POST['Comment']['type'];
-			$comment->key = $_POST['Comment']['key'];
+			$comment->attributes = $_POST[$cClass];
+			$comment->type = $_POST[$cClass]['type'];
+			$comment->key  = $_POST[$cClass]['key'];
 
 			// determine current users id
 			if (Yii::app()->user->isGuest) {
@@ -64,9 +64,9 @@ class CommentController extends CController
 					$output .= $this->renderPartial('_view',array(
 						'data'=>$comment,
 					), true);
-					$comment = new Comment();
-					$comment->type = $_POST['Comment']['type'];
-					$comment->key = $_POST['Comment']['key'];
+					$comment = Yii::createComponent($this->module->commentModelClass);
+					$comment->type = $_POST[$cClass]['type'];
+					$comment->key  = $_POST[$cClass]['key'];
 				}
 				$output .= $this->renderPartial('_form',array(
 					'comment'=>$comment,
@@ -102,9 +102,9 @@ class CommentController extends CController
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Comment']))
+		if(isset($_POST[$cClass=get_class($model)]))
 		{
-			$model->attributes=$_POST['Comment'];
+			$model->attributes=$_POST[$cClass];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -137,19 +137,9 @@ class CommentController extends CController
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin()
+	/*public function actionAdmin()
 	{
-        $this->breadcrumbs=array(
-            'Comments'=>array('index'),
-            'Manage',
-        );
-
-        $this->menu=array(
-            array('label'=>'List Comment', 'url'=>array('index')),
-            array('label'=>'Create Comment', 'url'=>array('create')),
-        );
-
-		$model=new Comment('search');
+		$model=Yii::createComponent($this->module->commentModelClass, 'search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Comment']))
 			$model->attributes=$_GET['Comment'];
@@ -157,7 +147,7 @@ class CommentController extends CController
 		$this->render('admin',array(
 			'model'=>$model,
 		));
-	}
+	}*/
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -166,7 +156,7 @@ class CommentController extends CController
 	 */
 	public function loadModel($id)
 	{
-		$model = Comment::model()->findByPk((int) $id);
+		$model = Yii::createComponent($this->module->commentModelClass)->findByPk((int) $id);
 		if ($model === null) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		}

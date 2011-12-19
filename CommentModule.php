@@ -36,6 +36,10 @@ class CommentModule extends CWebModule
 	 * @var array you can set accessRules that will be added to the comment controller {@see CController::accessRules()}
 	 */
 	public $controllerAccessRules = array();
+	/**
+	 * @var string allows you to extend comment class and use your extended one, set path alias here
+	 */
+	public $commentModelClass = 'comment.models.Comment';
 
     public function init()
     {
