@@ -127,4 +127,31 @@ Finally add comments to your view template of the commentable model:
 )); ?>
 ~~~
 
-If there is something missing here, or you think one step should be described more detailed please [report it](https://github.com/yiiext/comment-module/issues/new). Thanks!
+
+Extending Comment-Module
+------------------------
+
+Comment module raises [events](http://www.yiiframework.com/doc/guide/1.1/en/basics.component#component-event)
+to which you can attach event handlers to handle them.
+See [The Definitive Guide to Yii](http://www.yiiframework.com/doc/guide/1.1/en/basics.component#component-event) on how to do this.
+
+You can also attach [behaviors](http://www.yiiframework.com/doc/guide/1.1/en/basics.component#component-behavior)
+to CommentModule by setting `'behaviors'=>array(/* ... */)` to the config described above.
+See [CModule::behaviors](http://www.yiiframework.com/doc/api/1.1/CModule#behaviors-detail) on how to add behaviors to a module.
+
+### onNewComment
+
+This event is raised when a new comment has been saved.
+The following attributes are available on the `$event` gives as the first parameter to the event handler:
+
+* `$event->comment` is the currently added comment.
+* `$event->commentedModel` is the model the comment was added to.
+
+Possible use cases:
+
+* Send an E-Mail-Notification
+
+Events coming soon:
+
+### onCommentEdited
+### onCommentDelete

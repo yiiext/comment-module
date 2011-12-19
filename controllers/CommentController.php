@@ -39,6 +39,7 @@ class CommentController extends CController
 	 */
 	public function actionCreate()
 	{
+		/** @var Comment $comment */
 		$comment = Yii::createComponent($this->module->commentModelClass);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -59,15 +60,19 @@ class CommentController extends CController
 
 			if(Yii::app()->request->isAjaxRequest) {
 				$output = '';
-				if($comment->save()) {
-					$comment->refresh(); // need this to replace CDbExpression for timestamp attribute
+				if($comment->save())
+				{
+					// render new comment
 					$output .= $this->renderPartial('_view',array(
 						'data'=>$comment,
 					), true);
+
+					// create new comment model for empty form
 					$comment = Yii::createComponent($this->module->commentModelClass);
 					$comment->type = $_POST[$cClass]['type'];
 					$comment->key  = $_POST[$cClass]['key'];
 				}
+				// render comment form
 				$output .= $this->renderPartial('_form',array(
 					'comment'=>$comment,
 					'ajaxId'=>time(),

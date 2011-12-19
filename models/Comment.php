@@ -16,6 +16,9 @@
  * The followings are the available model relations:
  * @property Users $user
  * @property CommentsCommitMap $commentsCommitMap
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @package yiiext.modules.comment
  */
 class Comment extends CActiveRecord
 {
@@ -140,7 +143,13 @@ class Comment extends CActiveRecord
 			 VALUES (:id, :key);"
 		)->execute(array(':id' => $this->id, ':key' => $this->key));
 
+		// refresh model to replace CDbExpression for timestamp attribute
+		$this->refresh();
+
 		parent::afterSave();
+
+		// raise new comment event
+		$this->module->onNewComment($this, $commentedModel->findByPk($this->key));
 	}
 
 	/**

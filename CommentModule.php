@@ -2,6 +2,9 @@
 
 /**
  * This module includes complete commenting support into your application
+ * 
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @package yiiext.modules.comment
  */
 class CommentModule extends CWebModule
 {
@@ -64,4 +67,18 @@ class CommentModule extends CWebModule
         else
             return false;
     }
+
+	/**
+	 * This event is raised after a new comment has been added
+	 *
+	 * @param $comment
+	 * @param $model
+	 */
+	public function onNewComment($comment, $model)
+	{
+		$event = new CommentEvent();
+		$event->comment = $comment;
+		$event->commentedModel = $model;
+		$this->raiseEvent('onNewComment', $event);
+	}
 }
