@@ -2,7 +2,7 @@
 
 /**
  * This module includes complete commenting support into your application
- * 
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @package yiiext.modules.comment
  */
@@ -51,7 +51,8 @@ class CommentModule extends CWebModule
 
         // import the module-level models and components
         $this->setImport(array(
-            'comment.models.*',
+	        'comment.models.*',
+	        'comment.behaviors.*',
         ));
     }
 

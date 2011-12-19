@@ -75,6 +75,12 @@ class CommentableBehavior extends CActiveRecordBehavior
 		return Yii::app()->getModule('comment');
 	}
 
+	/**
+	 * returns a new comment instance that is related to the model this behavior is attached to
+	 *
+	 * @return Comment
+	 * @throws CException
+	 */
 	public function getCommentInstance()
 	{
 		$comment = Yii::createComponent($this->module->commentModelClass);
@@ -87,19 +93,49 @@ class CommentableBehavior extends CActiveRecordBehavior
 		return $comment;
 	}
 
+	/**
+	 * get all related comments for the model this behavior is attached to
+	 *
+	 * @return Comment[]
+	 * @throws CException
+	 */
 	public function getComments()
+	{
+		return Yii::createComponent($this->module->commentModelClass)
+					->findAll($this->getCommentCriteria());
+	}
+
+	/**
+	 * count all related comments for the model this behavior is attached to
+	 *
+	 * @return int
+	 * @throws CException
+	 */
+	public function getCommentCount()
+	{
+		return Yii::createComponent($this->module->commentModelClass)
+					->count($this->getCommentCriteria());
+	}
+
+	protected function getCommentCriteria()
 	{
 		if (is_null($this->mapTable) || is_null($this->mapRelatedColumn)) {
 			throw new CException('mapTable and mapRelatedColumn must not be null!');
 		}
+
 		// @todo: add support for composite pks
-		return Yii::createComponent($this->module->commentModelClass)->findAllBySql(
-			"SELECT * FROM comments c
-			 JOIN " . $this->mapTable . " cm ON c.id = cm." . $this->mapCommentColumn . "
-			 WHERE cm." . $this->mapRelatedColumn . "=:pk;", array(':pk'=>$this->owner->getPrimaryKey())
-		);
+		return new CDbCriteria(array(
+			'join' => "JOIN " . $this->mapTable . " cm ON t.id = cm." . $this->mapCommentColumn,
+		    'condition' => "cm." . $this->mapRelatedColumn . "=:pk",
+			'params' => array(':pk'=>$this->owner->getPrimaryKey())
+		));
 	}
 
+	/**
+	 * @todo this should be moved to a controller or widget
+	 *
+	 * @return CArrayDataProvider
+	 */
 	public function getCommentDataProvider()
 	{
 		return new CArrayDataProvider($this->getComments());
