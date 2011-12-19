@@ -3,10 +3,14 @@ Comment module
 
 makes every entity of your application commentable.
 Features:
+
 * Ajax creation of comment
 * Gravatar support
 * define multiple models that can be commented
 * more coming soon...
+
+If there is something missing here, or you think one step should be described more detailed,
+please [report it](https://github.com/yiiext/comment-module/issues/new). Thanks!
 
 Resources
 ---------
@@ -36,7 +40,7 @@ There are two ways to get this extension working:
 Quickstart
 ----------
 
-Add module to your application config:
+Add module to your application config (optional config values are commented):
 
 ~~~php
 <?php
@@ -54,7 +58,11 @@ Add module to your application config:
             // set this to the username attribute of User model class
             'userNameAttribute'=>'username',
             // set this to the email attribute of User model class
-            'userEmailAttribute'=>'email';
+            'userEmailAttribute'=>'email',
+            // you can set controller filters that will be added to the comment controller {@see CController::filters()}
+//          'controllerFilters'=>array(),
+            // you can set accessRules that will be added to the comment controller {@see CController::accessRules()}
+//          'controllerAccessRules'=>array(),
         ),
         // ...
     ),

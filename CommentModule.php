@@ -28,7 +28,14 @@ class CommentModule extends CWebModule
 	 * @var string attribute which holds the email of the user in {@see $userModelClass}
 	 */
 	public $userEmailAttribute = 'email';
-
+	/**
+	 * @var array you can set filters that will be added to the comment controller {@see CController::filters()}
+	 */
+	public $controllerFilters = array();
+	/**
+	 * @var array you can set accessRules that will be added to the comment controller {@see CController::accessRules()}
+	 */
+	public $controllerAccessRules = array();
 
     public function init()
     {

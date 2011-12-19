@@ -2,25 +2,19 @@
 
 /**
  *
+ * @property CommentModule $module
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @package yiiext.modules.comment
  */
-class CommentController extends Controller
+class CommentController extends CController
 {
-	/**
-	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-	 */
-	public $layout='//layouts/column2';
-
 	/**
 	 * @return array action filters
 	 */
 	public function filters()
 	{
-		return array(
-			'accessControl', // perform access control for CRUD operations
-		);
+		return $this->module->controllerFilters;
 	}
 
 	/**
@@ -30,58 +24,22 @@ class CommentController extends Controller
 	 */
 	public function accessRules()
 	{
-		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
-			),
-			array('deny',  // deny all users
-				'users'=>array('*'),
-			),
-		);
+		return $this->module->controllerAccessRules;
 	}
 
 	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id)
-	{
-        $model = $this->loadModel($id);
-
-        $this->breadcrumbs=array(
-            'Comments'=>array('index'),
-            $model->id,
-        );
-
-        $this->menu=array(
-            array('label'=>'List Comment', 'url'=>array('index')),
-            array('label'=>'Create Comment', 'url'=>array('create')),
-            array('label'=>'Update Comment', 'url'=>array('update', 'id'=>$model->id)),
-            array('label'=>'Delete Comment', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-            array('label'=>'Manage Comment', 'url'=>array('admin')),
-        );
-
-		$this->render('view',array(
-			'model'=>$model,
-		));
-	}
-
-	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 * Creates a new comment.
+	 *
+	 * On Ajax request:
+	 *   on successfull creation comment/_view is rendered
+	 *   on error comment/_form is rendered
+	 * On POST request:
+	 *   If creation is successful, the browser will be redirected to the
+	 *   url specified by POST value 'returnUrl'.
 	 */
 	public function actionCreate()
 	{
-		$comment=new Comment();
+		$comment = new Comment();
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -91,11 +49,14 @@ class CommentController extends Controller
 			$comment->attributes = $_POST['Comment'];
 			$comment->type = $_POST['Comment']['type'];
 			$comment->key = $_POST['Comment']['key'];
+
+			// determine current users id
 			if (Yii::app()->user->isGuest) {
 				$comment->userId = null;
 			} else {
 				$comment->userId = Yii::app()->user->id;
 			}
+
 			if(Yii::app()->request->isAjaxRequest) {
 				$output = '';
 				if($comment->save()) {
@@ -111,12 +72,15 @@ class CommentController extends Controller
 					'comment'=>$comment,
 					'ajaxId'=>time(),
 				), true);
+				// render javascript functions
 				Yii::app()->clientScript->renderBodyEnd($output);
 				echo $output;
 				Yii::app()->end();
 			} else {
 				if($comment->save()) {
 					$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('view','id'=>$comment->id));
+				} else {
+					// @todo: what if save fails?
 				}
 			}
 		}
@@ -134,19 +98,6 @@ class CommentController extends Controller
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
-
-        $this->breadcrumbs=array(
-            'Comments'=>array('index'),
-            $model->id=>array('view','id'=>$model->id),
-            'Update',
-        );
-
-        $this->menu=array(
-            array('label'=>'List Comment', 'url'=>array('index')),
-            array('label'=>'Create Comment', 'url'=>array('create')),
-            array('label'=>'View Comment', 'url'=>array('view', 'id'=>$model->id)),
-            array('label'=>'Manage Comment', 'url'=>array('admin')),
-        );
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -184,26 +135,6 @@ class CommentController extends Controller
 	}
 
 	/**
-	 * Lists all models.
-	 */
-	public function actionIndex()
-	{
-        $this->breadcrumbs=array(
-            'Comments',
-        );
-
-        $this->menu=array(
-            array('label'=>'Create Comment', 'url'=>array('create')),
-            array('label'=>'Manage Comment', 'url'=>array('admin')),
-        );
-
-		$dataProvider=new CActiveDataProvider('Comment');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
-	}
-
-	/**
 	 * Manages all models.
 	 */
 	public function actionAdmin()
@@ -235,9 +166,10 @@ class CommentController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Comment::model()->findByPk((int)$id);
-		if($model===null)
+		$model = Comment::model()->findByPk((int) $id);
+		if ($model === null) {
 			throw new CHttpException(404,'The requested page does not exist.');
+		}
 		return $model;
 	}
 
