@@ -1,3 +1,7 @@
+<?php if (Yii::app()->user->isGuest) {
+?><div class="comment-not-loggedin">
+	Sorry, you have to login to leave a comment.
+</div><?php } else { ?>
 <div id="comment-form-ajax" class="form">
 
 <?php $form = $this->beginWidget('CActiveForm', array(
@@ -41,3 +45,4 @@
 <?php $this->endWidget() ?>
 
 </div><!-- form -->
+<?php } ?>

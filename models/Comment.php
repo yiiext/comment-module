@@ -157,7 +157,7 @@ class Comment extends CActiveRecord
 	 */
 	public function getUserName()
 	{
-		return $this->user->{$this->module->userNameAttribute};
+		return is_null($this->user) ? 'Guest' : $this->user->{$this->module->userNameAttribute};
 	}
 
 	/**
@@ -165,7 +165,7 @@ class Comment extends CActiveRecord
 	 */
 	public function getUserEmail()
 	{
-		return $this->user->{$this->module->userEmailAttribute};
+		return is_null($this->user) ? 'nobody@example.com' : $this->user->{$this->module->userEmailAttribute};
 	}
 
 	/**
