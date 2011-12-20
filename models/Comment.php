@@ -89,6 +89,9 @@ class Comment extends CActiveRecord
 				'class' => 'zii.behaviors.CTimestampBehavior',
 				'createAttribute' => 'createDate',
 				'updateAttribute' => null,
+				// need special DbExpression when db is sqlite
+				'timestampExpression' => (strncasecmp('sqlite', $this->dbConnection->driverName, 6)===0) ?
+					new CDbExpression("date('now')") : null,
 			),
 		);
 	}
