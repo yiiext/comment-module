@@ -29,7 +29,7 @@
 ?>
 <div class="ext-comment">
 	<span class="ext-comment-head">
-		<span class="ext-comment-name"><?php echo $data->userName; ?></span>
+		<span class="ext-comment-name"><?php echo CHtml::encode($data->userName); ?></span>
 		wrote on
 		<span class="ext-comment-date">
 			<?php echo Yii::app()->format->formatDateTime(
@@ -46,8 +46,8 @@
 	    'rating'=>'r',
 	    'emailHashed'=>false,
 	    'htmlOptions'=>array(
-	        'alt'=>$data->userName,
-	        'title'=>$data->userName
+	        'alt'=>CHtml::encode($data->userName),
+	        'title'=>CHtml::encode($data->userName)
 	    )
 	)); ?>
 	<p><?php echo nl2br(CHtml::encode($data->message)); ?></p>
