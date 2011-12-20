@@ -24,6 +24,7 @@ Resources
 * Found a bug or want a feature? [Report it on github](https://github.com/yiiext/comment-module/issues)
 * [Code on github](https://github.com/yiiext/comment-module)
 * E-Mail the author: CeBe <[mail@cebe.cc](mailto:mail@cebe.cc)>
+* demo on [http://demo.cebe.cc/comment-module](http://demo.cebe.cc/comment-module)
 
 Download
 --------
