@@ -129,17 +129,26 @@ class CommentController extends CController
 	 */
 	public function actionDelete($id)
 	{
+		// we only allow deletion via POST request
 		if(Yii::app()->request->isPostRequest)
 		{
-			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
+			$comment = $this->loadModel($id);
+			if (!Yii::app()->user->isGuest && (Yii::app()->user->id == $comment->userId))
+			{
+				$comment->delete();
 
-			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+				// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+				if (!Yii::app()->request->isAjaxRequest) {
+					$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+				}
+			}
+			else {
+				throw new CHttpException(403,'Only comment owner can delete his comment.');
+			}
 		}
-		else
+		else {
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		}
 	}
 
 	/**
