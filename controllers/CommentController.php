@@ -105,21 +105,46 @@ class CommentController extends CController
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$comment=$this->loadModel($id);
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST[$cClass=get_class($model)]))
+		if(isset($_POST[$cClass=get_class($comment)]))
 		{
-			$model->attributes=$_POST[$cClass];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			$comment->attributes = $_POST[$cClass];
+
+			if ($comment->save())
+			{
+				if(Yii::app()->request->isAjaxRequest) {
+					// refresh model to replace CDbExpression for timestamp attribute
+					$comment->refresh();
+
+					// render updated comment
+					$this->renderPartial('_view',array(
+						'data'=>$comment,
+					));
+					Yii::app()->end();
+				} else {
+					$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('view','id'=>$comment->id));
+				}
+			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
-		));
+		if(Yii::app()->request->isAjaxRequest)
+		{
+			$output = $this->renderPartial('_form',array(
+				'comment'=>$comment,
+				'ajaxId'=>time(),
+			), true);
+			// render javascript functions
+			Yii::app()->clientScript->renderBodyEnd($output);
+			echo $output;
+			Yii::app()->end();
+		}
+		else
+		{
+			$this->render('update',array(
+				'model'=>$comment,
+			));
+		}
 	}
 
 	/**
@@ -170,6 +195,7 @@ class CommentController extends CController
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer the ID of the model to be loaded
+	 * @return Comment
 	 */
 	public function loadModel($id)
 	{

@@ -31,7 +31,8 @@
 	}
 	");
 ?>
-<div class="ext-comment">
+<div class="ext-comment" id="ext-comment-<?php echo $data->id; ?>">
+
 	<span class="ext-comment-head">
 		<span class="ext-comment-name"><?php echo CHtml::encode($data->userName); ?></span>
 		wrote on
@@ -41,7 +42,9 @@
 			); ?>
 		</span>:
 	</span>
+
 	<hr />
+
 	<?php $this->widget('comment.extensions.gravatar.yii-gravatar.YiiGravatar', array(
 	    'email'=>$data->userEmail,
 	    'size'=>80,
@@ -54,17 +57,27 @@
 	        'title'=>CHtml::encode($data->userName)
 	    )
 	)); ?>
+
 	<span class="ext-comment-options">
 	<?php if (!Yii::app()->user->isGuest && (Yii::app()->user->id == $data->userId)) {
 	    echo CHtml::ajaxLink('delete', array('/comment/comment/delete', 'id'=>$data->id), array(
-			'success'=>'function(){ $("#delete-comment-'.$data->id.'").parent().parent().remove(); }',
+			'success'=>'function(){ $("#ext-comment-'.$data->id.'").remove(); }',
 		    'type'=>'POST',
 	    ), array(
 		    'id'=>'delete-comment-'.$data->id,
 		    'confirm'=>'Are you sure you want to delete this item?',
 	    ));
+		echo " | ";
+		echo CHtml::ajaxLink('edit', array('/comment/comment/update', 'id'=>$data->id), array(
+			'replace'=>'#ext-comment-'.$data->id,
+			'type'=>'GET',
+		), array(
+			'id'=>'ext-comment-edit-'.$data->id,
+		));
 	} ?>
 	</span>
+
 	<p><?php echo nl2br(CHtml::encode($data->message)); ?></p>
+
 	<br style="clear: both;"/>
 </div>

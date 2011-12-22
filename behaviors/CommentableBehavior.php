@@ -42,6 +42,8 @@
  * }
  * </pre>
  *
+ * @property CommentModule $module
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @package yiiext.modules.comment
  */
@@ -101,8 +103,22 @@ class CommentableBehavior extends CActiveRecordBehavior
 	 */
 	public function getComments()
 	{
-		return Yii::createComponent($this->module->commentModelClass)
-					->findAll($this->getCommentCriteria());
+		$comments = Yii::createComponent($this->module->commentModelClass)
+					     ->findAll($this->getCommentCriteria());
+		// get model type
+		$type = get_class($this->owner);
+		foreach($this->module->commentableModels as $scope => $model) {
+			if ($type == $model) {
+				$type = $scope;
+				break;
+			}
+		}
+		foreach($comments as $comment) {
+			/** @var Comment $comment */
+			$comment->setType($type);
+			$comment->setKey($this->owner->primaryKey);
+		}
+		return $comments;
 	}
 
 	/**

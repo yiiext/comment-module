@@ -17,7 +17,7 @@ class CommentModule extends CWebModule
 	 * 'modelclass' is a class name of the commentable AR
 	 * this AR class must have the {@see CommentableBehavior} attached to it
 	 */
-	public $commentableModels = array('task');
+	public $commentableModels = array();
 
 	/**
 	 * @var string name of the user model class to use for comments
@@ -81,5 +81,33 @@ class CommentModule extends CWebModule
 		$event->comment = $comment;
 		$event->commentedModel = $model;
 		$this->raiseEvent('onNewComment', $event);
+	}
+
+	/**
+	 * This event is raised after a comment has been updated
+	 *
+	 * @param $comment
+	 * @param $model currently not available see {@link https://github.com/yiiext/comment-module/issues/10}
+	 */
+	public function onUpdateComment($comment/*, $model*/)
+	{
+		$event = new CommentEvent();
+		$event->comment = $comment;
+		//$event->commentedModel = $model;
+		$this->raiseEvent('onUpdateComment', $event);
+	}
+
+	/**
+	 * This event is raised after a comment got deleted
+	 *
+	 * @param $comment
+	 * @param $model currently not available see {@link https://github.com/yiiext/comment-module/issues/10}
+	 */
+	public function onDeleteComment($comment/*, $model*/)
+	{
+		$event = new CommentEvent();
+		$event->comment = $comment;
+		//$event->commentedModel = $model;
+		$this->raiseEvent('onDeleteComment', $event);
 	}
 }

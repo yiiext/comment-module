@@ -24,6 +24,7 @@ class Comment extends CActiveRecord
 {
 	private $_type;
 	private $_key;
+	private $_new = false;
 
 	/**
 	 * @var string set the commentableModels scope from CommentModule
@@ -102,8 +103,8 @@ class Comment extends CActiveRecord
 	{
 		return array(
 			array('message', 'safe'),
-			array('type', 'validateType'),
-			array('key', 'validateKey'),
+			array('type', 'validateType', 'on'=>'create'),
+			array('key',  'validateKey',  'on'=>'create'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, message, userId', 'safe', 'on'=>'search'),
@@ -138,18 +139,41 @@ class Comment extends CActiveRecord
 		);
 	}
 
+	protected function beforeSave()
+	{
+		$this->_new = $this->isNewRecord;
+		return parent::beforeSave();
+	}
+
 	protected function afterSave()
 	{
-		$commentedModel = CActiveRecord::model($this->module->commentableModels[$this->type]);
-		$this->getDbConnection()->createCommand(
-			"INSERT INTO ".$commentedModel->mapTable."(".$commentedModel->mapCommentColumn.", ".$commentedModel->mapRelatedColumn.")
-			 VALUES (:id, :key);"
-		)->execute(array(':id' => $this->id, ':key' => $this->key));
+		if ($this->_new) {
+			$commentedModel = CActiveRecord::model($this->module->commentableModels[$this->type]);
+			// if comment is new, connect it with commended model
+			$this->getDbConnection()->createCommand(
+				"INSERT INTO ".$commentedModel->mapTable."(".$commentedModel->mapCommentColumn.", ".$commentedModel->mapRelatedColumn.")
+				 VALUES (:id, :key);"
+			)->execute(array(':id' => $this->id, ':key' => $this->key));
 
-		parent::afterSave();
+			parent::afterSave();
 
-		// raise new comment event
-		$this->module->onNewComment($this, $commentedModel->findByPk($this->key));
+			// raise new comment event
+			$this->module->onNewComment($this, $commentedModel->findByPk($this->key));
+		} else {
+			parent::afterSave();
+		}
+		// raise update comment event
+		$this->module->onUpdateComment($this/*, $commentedModel->findByPk($this->key)*/);
+	}
+
+	protected function afterDelete()
+	{
+		parent::afterDelete();
+		// raise update comment event
+		$this->module->onDeleteComment(
+			$this/*,
+			CActiveRecord::model($this->module->commentableModels[$this->type])->findByPk($this->key)*/
+		);
 	}
 
 	/**

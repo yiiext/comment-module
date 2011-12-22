@@ -4,9 +4,10 @@ Comment module
 makes every entity of your application commentable.
 Features:
 
-* Ajax creation of comment
+* Create, Update, Delete comments with ajax
 * Gravatar support
 * define multiple models that can be commented
+* Events raised on new, update, delete
 * more coming soon...
 
 If there is something missing here, or you think one step should be described more detailed,
@@ -151,14 +152,24 @@ See [CModule::behaviors](http://www.yiiframework.com/doc/api/1.1/CModule#behavio
 This event is raised when a new comment has been saved.
 The following attributes are available on the `$event` given as the first parameter to the event handler:
 
-* `$event->comment` is the currently added comment.
+* `$event->comment` is the ActiveRecord instance of the currently added comment.
 * `$event->commentedModel` is the model the comment was added to.
 
 Possible use cases:
 
 * Send an E-Mail-Notification
 
-Events coming soon:
+### onUpdateComment
 
-### onCommentEdited
-### onCommentDelete
+This event is raised when a user edited a comment.
+The following attributes are available on the `$event` given as the first parameter to the event handler:
+
+* `$event->comment` is the ActiveRecord instance of the updated comment.
+
+### onDeleteComment
+
+This event is raised when a user deleted a comment.
+The following attributes are available on the `$event` given as the first parameter to the event handler:
+
+* `$event->comment` is the ActiveRecord instance of the deleted comment.
+
