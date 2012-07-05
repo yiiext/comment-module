@@ -30,6 +30,9 @@
 		color: #aaa;
 	}
 	");
+	if (isset($cssOnly) && $cssOnly) {
+		return;
+	}
 ?>
 <div class="ext-comment" id="ext-comment-<?php echo $data->id; ?>">
 

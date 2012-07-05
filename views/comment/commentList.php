@@ -1,5 +1,7 @@
 <?php
 
+$this->renderPartial('comment.views.comment._view', array('cssOnly'=>true));
+
 /** @var CArrayDataProvider $comments */
 $comments = $model->getCommentDataProvider();
 $comments->setPagination(false);
