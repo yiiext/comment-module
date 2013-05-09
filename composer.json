@@ -4,6 +4,7 @@
     "keywords": ["yii", "extension", "comments"],
     "homepage": "https://github.com/yiiext/comment-module",
     "type": "yii-extension",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Carsten Brandt",
